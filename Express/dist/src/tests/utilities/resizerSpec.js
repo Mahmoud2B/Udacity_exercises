@@ -39,18 +39,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __importDefault(require("../index"));
-var supertest_1 = __importDefault(require("supertest"));
-var request = (0, supertest_1.default)(index_1.default);
-describe("Test endpoints responses", function () {
-    it("Server is running", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
+var resizer_1 = __importDefault(require("../../utilities/resizer"));
+var validFileName = "image";
+var invalidFileName = "notValid.jpg";
+describe("Image resize function", function () {
+    it("should pass if all params are right", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/")];
+                case 0: return [4 /*yield*/, expectAsync((0, resizer_1.default)(validFileName, "300", "300")).toBeResolved()];
                 case 1:
-                    response = _a.sent();
-                    expect(response.status).toBe(200);
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("should throw an error if width or height are not numbers", function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, expectAsync((0, resizer_1.default)(validFileName, "string", "[]")).toBeRejectedWithError("Height and width should exist and should be numbers")];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("should throw an error if file do not exist", function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, expectAsync((0, resizer_1.default)(invalidFileName, "300", "300")).toBeRejectedWithError("file not found")];
+                case 1:
+                    _a.sent();
                     return [2 /*return*/];
             }
         });
