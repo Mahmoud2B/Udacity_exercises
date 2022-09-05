@@ -39,18 +39,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __importDefault(require("../index"));
+var __1 = __importDefault(require("../.."));
 var supertest_1 = __importDefault(require("supertest"));
-var request = (0, supertest_1.default)(index_1.default);
-describe("Test endpoints responses", function () {
-    it("Server is running", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
+var request = (0, supertest_1.default)(__1.default);
+describe("Image processor middleware", function () {
+    it("Should be 200", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/")];
+                case 0: return [4 /*yield*/, request.get("/api/image?fileName=image&width=300&height=300")];
                 case 1:
-                    response = _a.sent();
-                    expect(response.status).toBe(200);
+                    result = _a.sent();
+                    expect(result.status).toEqual(200);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Should throw 400 if filename do not exist in the query", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request.get("/api/image?width=300&height=300")];
+                case 1:
+                    result = _a.sent();
+                    expect(result.status).toBe(400);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Should throw 400 if width do not exist in the query", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request.get("/api/image?fileName=file&height=300")];
+                case 1:
+                    result = _a.sent();
+                    expect(result.status).toBe(400);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Should throw 400 if height do not exist in the query", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request.get("/api/image?fileName=file&width=300")];
+                case 1:
+                    result = _a.sent();
+                    expect(result.status).toBe(400);
                     return [2 /*return*/];
             }
         });

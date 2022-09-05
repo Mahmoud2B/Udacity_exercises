@@ -39,20 +39,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __importDefault(require("../index"));
-var supertest_1 = __importDefault(require("supertest"));
-var request = (0, supertest_1.default)(index_1.default);
-describe("Test endpoints responses", function () {
-    it("Server is running", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/")];
-                case 1:
-                    response = _a.sent();
-                    expect(response.status).toBe(200);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-});
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
+var sharp_1 = __importDefault(require("sharp"));
+var resizeImage = function (fileName, height, width) { return __awaiter(void 0, void 0, void 0, function () {
+    var heightNumber, widthNumber, targetFileName, filePath, fileFullPath, targetPath;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                heightNumber = Number.parseInt(height);
+                widthNumber = Number.parseInt(width);
+                targetFileName = "".concat(fileName, "-").concat(width, "-").concat(height);
+                if (isNaN(heightNumber) || isNaN(widthNumber)) {
+                    throw new Error("Height and width should exist and should be numbers");
+                }
+                filePath = path_1.default.resolve("./assets/full/" + fileName + ".jpg");
+                fileFullPath = path_1.default.resolve("./assets/thumbnails/" + targetFileName + ".jpg");
+                if (!fs_1.default.existsSync(filePath)) {
+                    throw new Error("file not found");
+                }
+                targetPath = path_1.default.resolve("./assets/thumbnails/" + targetFileName + ".jpg");
+                if (!!fs_1.default.existsSync(fileFullPath)) return [3 /*break*/, 2];
+                console.log("File was created!");
+                return [4 /*yield*/, (0, sharp_1.default)(filePath).resize(heightNumber, widthNumber).toFile(targetPath)];
+            case 1:
+                _a.sent();
+                _a.label = 2;
+            case 2: return [2 /*return*/, "./assets/thumbnails/".concat(targetFileName, ".jpg")];
+        }
+    });
+}); };
+exports.default = resizeImage;

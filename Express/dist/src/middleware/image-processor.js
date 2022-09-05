@@ -39,20 +39,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __importDefault(require("../index"));
-var supertest_1 = __importDefault(require("supertest"));
-var request = (0, supertest_1.default)(index_1.default);
-describe("Test endpoints responses", function () {
-    it("Server is running", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/")];
-                case 1:
-                    response = _a.sent();
-                    expect(response.status).toBe(200);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-});
+var resizer_1 = __importDefault(require("../utilities/resizer"));
+var imageProcessor = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var newImagePath, e_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, (0, resizer_1.default)(req.query["fileName"], req.query["width"], req.query["height"])];
+            case 1:
+                newImagePath = _a.sent();
+                res.sendFile(newImagePath, { root: "." });
+                return [3 /*break*/, 3];
+            case 2:
+                e_1 = _a.sent();
+                if (typeof e_1 === "string") {
+                    res.status(400).send(e_1);
+                }
+                else if (e_1 instanceof Error) {
+                    res.status(400).send(e_1.message);
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.default = imageProcessor;
