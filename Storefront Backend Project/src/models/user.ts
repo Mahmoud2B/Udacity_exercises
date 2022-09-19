@@ -3,8 +3,9 @@ import bcrypt from 'bcrypt';
 
 export type User = {
     id?: number;
-    name: string;
     username: string;
+    first_name: string;
+    last_name: string;
     password: string;
 };
 
@@ -13,8 +14,11 @@ export class UserStore {
         try {
             const conn = await client.connect();
             const sql = 'SELECT * FROM users';
+
             const result = await conn.query(sql);
+
             conn.release();
+
             return result.rows;
         } catch (err) {
             throw new Error(`Can't retrieve users! ${err}`);
@@ -29,9 +33,12 @@ export class UserStore {
                 user.password + process.env.BCRYPT_PASSWORD,
                 parseInt(process.env.SALT_ROUNDS ?? '1')
             );
-            const sql = `INSERT INTO users VALUES ('${user.name}','${user.username}',($1)) RETURNING *`;
+            const sql = `INSERT INTO users (username,first_name,last_name,password) VALUES ('${user.username}','${user.first_name}','${user.last_name}','${hash}') RETURNING *`;
             console.log(sql);
-            const result = await conn.query(sql, [hash]);
+            const result = await conn.query(sql);
+
+            conn.release();
+
             return result.rows[0];
         } catch (error) {
             throw new Error(`Can't Create user! ${error}`);
@@ -42,28 +49,34 @@ export class UserStore {
         username: string,
         password: string
     ): Promise<User | null> {
-        const conn = await client.connect();
-        const sql = 'SELECT password FROM users WHERE username=($1)';
+        try {
+            const conn = await client.connect();
+            const sql = 'SELECT * FROM users WHERE username=($1)';
 
-        const result = await conn.query(sql, [username]);
+            const result = await conn.query(sql, [username]);
 
-        console.log(password + process.env.BCRYPT_PASSWORD);
+            conn.release();
 
-        if (result.rows.length) {
-            const user = result.rows[0];
+            console.log(password + process.env.BCRYPT_PASSWORD);
 
-            console.log(user);
+            if (result.rows.length) {
+                const user = result.rows[0];
 
-            if (
-                bcrypt.compareSync(
-                    password + process.env.BCRYPT_PASSWORD,
-                    user.password
-                )
-            ) {
-                return user;
+                console.log(user);
+
+                if (
+                    bcrypt.compareSync(
+                        password + process.env.BCRYPT_PASSWORD,
+                        user.password
+                    )
+                ) {
+                    return user;
+                }
             }
-        }
 
-        return null;
+            return null;
+        } catch (error) {
+            throw new Error(`Something went wrong ${error}`);
+        }
     }
 }
