@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import client from '../database';
 
 export type Product = {

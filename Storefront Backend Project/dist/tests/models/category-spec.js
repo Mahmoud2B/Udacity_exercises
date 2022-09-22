@@ -36,14 +36,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var product_1 = require("../../models/product");
-var store = new product_1.ProductStore();
-describe('Test Product Model', function () {
-    var product = {
-        id: 1,
-        category_id: 1,
-        name: 'Iphone 14 pro max',
-        price: 1100.1
+var category_1 = require("../../models/category");
+var store = new category_1.CategoryStore();
+describe('Test Category Model', function () {
+    var category = {
+        id: 2,
+        name: 'Mobile Phones'
     };
     it('should have an index method', function () {
         expect(store.index).toBeDefined();
@@ -54,38 +52,39 @@ describe('Test Product Model', function () {
     it('should have a create method', function () {
         expect(store.create).toBeDefined();
     });
-    it('create method should add a Product', function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('create method should add a category', function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, store.create(product)];
+                case 0: return [4 /*yield*/, store.create(category)];
                 case 1:
                     result = _a.sent();
-                    expect(result).toEqual(product);
+                    expect(result).toEqual(category);
                     return [2 /*return*/];
             }
         });
     }); });
-    it('index method should return product(s)', function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('index method should return categories', function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, store.index()];
                 case 1:
                     result = _a.sent();
-                    expect(result).toEqual([product]);
+                    // category DB already have one record so this will be the second one
+                    expect(result[1]).toEqual(category);
                     return [2 /*return*/];
             }
         });
     }); });
-    it('show method should return a product', function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('show method should return a category', function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, store.show(1)];
+                case 0: return [4 /*yield*/, store.show(2)];
                 case 1:
                     result = _a.sent();
-                    expect(result).toEqual(product);
+                    expect(result).toEqual(category);
                     return [2 /*return*/];
             }
         });

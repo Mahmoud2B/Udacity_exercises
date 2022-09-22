@@ -35,57 +35,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var product_1 = require("../../models/product");
-var store = new product_1.ProductStore();
-describe('Test Product Model', function () {
-    var product = {
+var user_1 = require("../../models/user");
+var bcrypt_1 = __importDefault(require("bcrypt"));
+var store = new user_1.UserStore();
+describe('Test User Model', function () {
+    var user = {
         id: 1,
-        category_id: 1,
-        name: 'Iphone 14 pro max',
-        price: 1100.1
+        first_name: 'mahmoud',
+        last_name: 'mabrouk',
+        password: '123321',
+        username: 'mabrouk'
     };
     it('should have an index method', function () {
         expect(store.index).toBeDefined();
     });
     it('should have a show method', function () {
-        expect(store.show).toBeDefined();
+        expect(store.authenticate).toBeDefined();
     });
     it('should have a create method', function () {
         expect(store.create).toBeDefined();
     });
-    it('create method should add a Product', function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('create method should hash the password correctly', function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, store.create(product)];
+                case 0: return [4 /*yield*/, store.create(user)];
                 case 1:
                     result = _a.sent();
-                    expect(result).toEqual(product);
+                    expect(bcrypt_1.default.compareSync(user.password + process.env.BCRYPT_PASSWORD, result.password)).toBeTrue();
                     return [2 /*return*/];
             }
         });
     }); });
-    it('index method should return product(s)', function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('index method should return user(s)', function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, store.index()];
                 case 1:
                     result = _a.sent();
-                    expect(result).toEqual([product]);
+                    expect(result.length).toEqual(1);
                     return [2 /*return*/];
             }
         });
     }); });
-    it('show method should return a product', function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('Authenticate method should return user', function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, store.show(1)];
+                case 0: return [4 /*yield*/, store.authenticate(user.username, user.password)];
                 case 1:
                     result = _a.sent();
-                    expect(result).toEqual(product);
+                    expect(result).toBeTruthy();
+                    expect(bcrypt_1.default.compareSync(user.password + process.env.BCRYPT_PASSWORD, result.password)).toBeTrue();
                     return [2 /*return*/];
             }
         });

@@ -82,7 +82,6 @@ var UserStore = /** @class */ (function () {
                         conn = _b.sent();
                         hash = bcrypt_1.default.hashSync(user.password + process.env.BCRYPT_PASSWORD, parseInt((_a = process.env.SALT_ROUNDS) !== null && _a !== void 0 ? _a : '1'));
                         sql = "INSERT INTO users (username,first_name,last_name,password) VALUES ('".concat(user.username, "','").concat(user.first_name, "','").concat(user.last_name, "','").concat(hash, "') RETURNING *");
-                        console.log(sql);
                         return [4 /*yield*/, conn.query(sql)];
                     case 2:
                         result = _b.sent();
@@ -111,10 +110,8 @@ var UserStore = /** @class */ (function () {
                     case 2:
                         result = _a.sent();
                         conn.release();
-                        console.log(password + process.env.BCRYPT_PASSWORD);
                         if (result.rows.length) {
                             user = result.rows[0];
-                            console.log(user);
                             if (bcrypt_1.default.compareSync(password + process.env.BCRYPT_PASSWORD, user.password)) {
                                 return [2 /*return*/, user];
                             }

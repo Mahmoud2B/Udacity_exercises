@@ -34,7 +34,6 @@ export class UserStore {
                 parseInt(process.env.SALT_ROUNDS ?? '1')
             );
             const sql = `INSERT INTO users (username,first_name,last_name,password) VALUES ('${user.username}','${user.first_name}','${user.last_name}','${hash}') RETURNING *`;
-            console.log(sql);
             const result = await conn.query(sql);
 
             conn.release();
@@ -57,12 +56,8 @@ export class UserStore {
 
             conn.release();
 
-            console.log(password + process.env.BCRYPT_PASSWORD);
-
             if (result.rows.length) {
                 const user = result.rows[0];
-
-                console.log(user);
 
                 if (
                     bcrypt.compareSync(
